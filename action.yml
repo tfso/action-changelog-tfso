@@ -1,0 +1,30 @@
+name: 'Excel Changelog'
+description: 'Automates adding updates to the TFSO excel changelog.'
+inputs:
+  service_name: 
+    description: 'Name of the Rancher service to upgrade, _must_ start with tfso-'
+    required: true
+  team:
+    description: 'Name of the team this service belongs to, ie., COLAB'
+    required: true
+  module: 
+    description: 'Name of the module the API or Website is a part of.'
+    required: true
+  version:
+    description: 'Version of the image to upgrade to. Will use tag value if exists and none is entered'
+    required: false
+  google_private_key:
+    description: 'Private key from Googles keys.json file'
+    required: true
+  google_email:
+    description: 'Email for the google sheets changelog service account'
+    required: true
+  release_type:
+    description: 'Release type, can be release or rollback'
+    required: false
+    default: 'release'
+  
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
