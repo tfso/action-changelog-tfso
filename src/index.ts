@@ -89,6 +89,7 @@ function getInputData() {
     core.getInput("google_private_key") ??
     process.env.GOOGLE_CHANGELOG_PRIVATE_KEY;
   const googleSheetsId =
+    core.getInput("google_changelog_spreadsheets_id") ??
     process.env.GOOGLE_CHANGELOG_SPREADSHEETS_ID ??
     "1ShcXzIuG8UhQH4deWLkQLZCfnClwNNgFH7EnNQ9591s";
 
@@ -96,7 +97,9 @@ function getInputData() {
   const serviceName = core.getInput("service_name");
   const team = core.getInput("team");
   const module = core.getInput("module");
-  const githubApiToken = process.env.GITHUB_TOKEN;
+  const githubApiToken = 
+    core.getInput("GITHUB_TOKEN") ??
+    process.env.GITHUB_TOKEN;
 
   const version =
     core.getInput("version") || context.ref.replace("refs/tags/", "");

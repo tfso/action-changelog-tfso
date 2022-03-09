@@ -1,6 +1,9 @@
 name: 'Excel Changelog'
 description: 'Automates adding updates to the TFSO excel changelog.'
 inputs:
+  GITHUB_TOKEN:
+    description: 'Access token to current github repository'
+    required: true
   service_name: 
     description: 'Name of the Rancher service to upgrade, _must_ start with tfso-'
     required: true
@@ -19,6 +22,9 @@ inputs:
   google_email:
     description: 'Email for the google sheets changelog service account'
     required: true
+  google_changelog_spreadsheets_id:
+    description: 'Id to spreadsheet'
+    required: false
   release_type:
     description: 'Release type, can be release or rollback'
     required: false
