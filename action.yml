@@ -3,7 +3,7 @@ description: 'Automates adding updates to the TFSO excel changelog.'
 inputs:
   GITHUB_TOKEN:
     description: 'Access token to current github repository'
-    required: true
+    required: false
   service_name: 
     description: 'Name of the Rancher service to upgrade, _must_ start with tfso-'
     required: true
