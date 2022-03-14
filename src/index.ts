@@ -98,7 +98,7 @@ function getInputData() {
   const team = core.getInput("team");
   const module = core.getInput("module");
   const githubApiToken = 
-    core.getInput("GITHUB_TOKEN") ??
+    core.getInput("GITHUB_TOKEN") ||
     process.env.GITHUB_TOKEN;
 
   const version =
