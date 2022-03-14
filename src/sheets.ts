@@ -33,11 +33,18 @@ async function createFromTemplate(doc: any, title: string) {
   return sheet;
 }
 
-const getInitials = (name: string): string =>
-  name
+const getInitialsOrNickname = (name: string): string => {
+  const initials = name
     .split(" ")
-    .map((n) => n[0])
+    .map((n) => n[0].toUpperCase())
     .join("");
+
+    // Some users only have firstName or nickname,
+    // we just display their name instead of a single letter
+    return initials.length === 1
+      ? name
+      : initials
+}
 
 export const createExcelInput = (
   context: Context,
@@ -50,7 +57,7 @@ export const createExcelInput = (
   const isoDate = getIsoDateInNorwegianTimezone();
   const date = isoDate.slice(0, 10);
   const time = isoDate.slice(11, 16);
-  const devInitials = getInitials(context.payload.head_commit.author.name);
+  const devInitials = getInitialsOrNickname(context.payload.head_commit.author.name);
 
   return [
     date,
