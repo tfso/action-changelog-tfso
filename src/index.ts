@@ -84,13 +84,13 @@ async function getApproval(octokit: Octokit, repo: string, runId: number, releas
 
 function getInputData() {
   const googleEmail =
-    core.getInput("google_email") ?? process.env.GOOGLE_CHANGELOG_EMAIL;
+    core.getInput("google_email") || process.env.GOOGLE_CHANGELOG_EMAIL;
   const googlePrivateKey =
-    core.getInput("google_private_key") ??
+    core.getInput("google_private_key") ||
     process.env.GOOGLE_CHANGELOG_PRIVATE_KEY;
   const googleSheetsId =
-    core.getInput("google_changelog_spreadsheets_id") ??
-    process.env.GOOGLE_CHANGELOG_SPREADSHEETS_ID ??
+    core.getInput("google_changelog_spreadsheets_id") ||
+    process.env.GOOGLE_CHANGELOG_SPREADSHEETS_ID ||
     "1ShcXzIuG8UhQH4deWLkQLZCfnClwNNgFH7EnNQ9591s";
 
   const releaseType = core.getInput("release_type");
