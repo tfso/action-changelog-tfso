@@ -1,6 +1,6 @@
 import { Context } from '@actions/github/lib/context'
 const { GoogleSpreadsheet } = require('google-spreadsheet')
-import { Approver } from './types'
+import { ActionContext } from './types'
 import { getIsoDateInNorwegianTimezone } from "./utils"
 
 export async function appendRow(sheet: any, input: string[]) {
@@ -47,27 +47,27 @@ const getInitialsOrNickname = (name: string): string => {
 }
 
 export const createExcelInput = (
-  context: Context,
+  context: ActionContext,
   serviceName: string,
   team: string,
   module: string,
   version: string,
-  approval: Approver
+  runId: number  
 ): string[] => {
   const isoDate = getIsoDateInNorwegianTimezone();
   const date = isoDate.slice(0, 10);
   const time = isoDate.slice(11, 16);
-  const devInitials = getInitialsOrNickname(context.payload.head_commit?.author?.name ?? '');
+  const devInitials = getInitialsOrNickname(context.author.name);
 
   return [
     date,
     time,
     serviceName,
     version,
-    approval.comment,
-    `${context.payload.repository.html_url}/releases/tag/${version}`,
-    `${context.payload.repository.html_url}/actions/runs/${context.runId}`,
+    context.comment,
+    `${context.repository.html_url}/releases/tag/${version}`,
+    `${context.repository.html_url}/actions/runs/${runId}`,
     devInitials,
-    approval.deployer,
+    context.deployer,
   ];
 };
