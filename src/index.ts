@@ -78,7 +78,7 @@ async function getActionContext(octokit: Octokit, repo: string, runId: number, r
   const comment = `${releaseType === "rollback" ? "(ROLLBACK) " : ""}${approval?.comment ?? message}`;
 
   return {
-    deployer: approval?.user.name ?? approval?.user.login ?? actor.name ?? '',
+    deployer: approval?.user.name ?? approval?.user.login ?? actor.name ?? actor.login ?? '',
     comment,
     repository, 
     author
