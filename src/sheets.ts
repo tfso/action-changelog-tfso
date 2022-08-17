@@ -34,7 +34,7 @@ async function createFromTemplate(doc: any, title: string) {
 }
 
 const getInitialsOrNickname = (name: string): string => {
-  const initials = name
+  const initials = String(name)
     .split(" ")
     .map((n) => n[0].toUpperCase())
     .join("");
@@ -57,7 +57,7 @@ export const createExcelInput = (
   const isoDate = getIsoDateInNorwegianTimezone();
   const date = isoDate.slice(0, 10);
   const time = isoDate.slice(11, 16);
-  const devInitials = getInitialsOrNickname(context.payload.head_commit.author.name);
+  const devInitials = getInitialsOrNickname(context.payload.head_commit?.author?.name ?? '');
 
   return [
     date,
