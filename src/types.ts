@@ -1,4 +1,11 @@
-export type Approver = {
+export type ActionContext = {
+    repository: {
+        html_url: string
+    }
+    author: { 
+        name?: string
+        email?: string
+    }
     deployer: string
     comment: string
 }

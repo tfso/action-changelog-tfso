@@ -3,7 +3,7 @@ import { context, getOctokit } from "@actions/github"
 import { Octokit } from '@octokit/core'
 import { getSheet, getGoogleSheetsDoc, appendRow, createExcelInput } from "./sheets"
 import { getIsoDateInNorwegianTimezone, norwayTimezone } from "./utils"
-import { Approver } from './types'
+import { ActionContext } from './types'
 
 const run = async () => {
   console.log("Started TFSO changelog");
@@ -22,7 +22,7 @@ const run = async () => {
 
     const octokit = getOctokit(githubApiToken);
 
-    const approval = await getApproval(
+    const actionContext = await getActionContext(
       octokit,
       context.payload.repository.name,
       context.runId,
@@ -30,12 +30,12 @@ const run = async () => {
     );
 
     const input = createExcelInput(
-      context,
+      actionContext,
       serviceName,
       team,
       module,
       version,
-      approval
+      context.runId
     );
 
     console.log("Authenticate against google");
@@ -55,8 +55,17 @@ const run = async () => {
   }
 }
 
-async function getApproval(octokit: Octokit, repo: string, runId: number, releaseType: string): Promise<Approver> {
-  const { data } = await octokit.request(
+async function getActionContext(octokit: Octokit, repo: string, runId: number, releaseType: string): Promise<ActionContext> {
+  const { data: { repository, triggering_actor: actor, head_commit } } = await octokit.request(
+    "GET /repos/{owner}/{repo}/actions/runs/{run_id}",
+    {
+      owner: "tfso",
+      repo,
+      run_id: runId,
+    }
+  );
+
+  const { data: approvals } = await octokit.request(
     "GET /repos/{owner}/{repo}/actions/runs/{run_id}/approvals",
     {
       owner: "tfso",
@@ -65,20 +74,14 @@ async function getApproval(octokit: Octokit, repo: string, runId: number, releas
     }
   );
 
-  if (data.length === 0) {
-    return {
-      deployer: "",
-      comment: "[warn] no approvals found",
-    };
-  }
-
-  const comment = `${releaseType === "rollback" ? "(ROLLBACK) " : ""}${
-    data[0].comment
-  }`;
+  const [approval] = approvals;
+  const comment = `${releaseType === "rollback" ? "(ROLLBACK) " : ""}${approval?.comment ?? head_commit?.message}`;
 
   return {
-    deployer: data[0].user.login,
+    deployer: approval?.user.name ?? approval?.user.login ?? actor.name ?? actor.login ?? '',
     comment,
+    repository, 
+    author: head_commit?.author ?? head_commit.committer ?? { }
   };
 }
 
