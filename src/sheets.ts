@@ -36,7 +36,7 @@ async function createFromTemplate(doc: any, title: string) {
 const getInitialsOrNickname = (name: string): string => {
   const initials = String(name)
     .split(" ")
-    .map((n) => n[0].toUpperCase())
+    .map((n) => n[0]?.toUpperCase())
     .join("");
 
     // Some users only have firstName or nickname,
