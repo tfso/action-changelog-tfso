@@ -56,7 +56,7 @@ const run = async () => {
 }
 
 async function getActionContext(octokit: Octokit, repo: string, runId: number, releaseType: string): Promise<ActionContext> {
-  const { data: { repository, triggering_actor: actor, head_commit: { message, author } } } = await octokit.request(
+  const { data: { repository, triggering_actor: actor, head_commit } } = await octokit.request(
     "GET /repos/{owner}/{repo}/actions/runs/{run_id}",
     {
       owner: "tfso",
@@ -75,13 +75,13 @@ async function getActionContext(octokit: Octokit, repo: string, runId: number, r
   );
 
   const [approval] = approvals;
-  const comment = `${releaseType === "rollback" ? "(ROLLBACK) " : ""}${approval?.comment ?? message}`;
+  const comment = `${releaseType === "rollback" ? "(ROLLBACK) " : ""}${approval?.comment ?? head_commit?.message}`;
 
   return {
     deployer: approval?.user.name ?? approval?.user.login ?? actor.name ?? actor.login ?? '',
     comment,
     repository, 
-    author
+    author: head_commit?.author ?? head_commit.committer ?? { }
   };
 }
 

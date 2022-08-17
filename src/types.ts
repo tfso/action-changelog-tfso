@@ -3,8 +3,8 @@ export type ActionContext = {
         html_url: string
     }
     author: { 
-        name: string
-        email: string
+        name?: string
+        email?: string
     }
     deployer: string
     comment: string
