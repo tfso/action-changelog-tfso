@@ -38,6 +38,7 @@ const run = async () => {
       context.runId
     );
 
+    console.log("team", team);
     console.log("Authenticate against google");
     const doc = await getGoogleSheetsDoc(googleSheetsId, {
       client_email: googleEmail,
